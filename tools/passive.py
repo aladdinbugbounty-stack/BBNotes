@@ -925,7 +925,7 @@ def auto_install_tools(missing, logger):
         "github-endpoints": "github.com/rix4uni/github-endpoints",
         "haktrailsfree": "github.com/rix4uni/haktrailsfree"
     }
-    pip_tools = {
+    pipx_tools = {
         "emailfinder": "emailfinder",
         "waymore": "waymore",
         "bbot": "bbot"
@@ -936,20 +936,27 @@ def auto_install_tools(missing, logger):
     
     for tool in missing:
         cmd = None
+        current_env = os.environ.copy()
         if tool in go_tools:
             if not find_binary("go"):
                 logger.log(f"Skipping {tool}: 'go' command missing.", "ERR")
                 continue
             logger.log(f"Installing {tool} via go install...", "INFO")
             cmd = f"go install {go_tools[tool]}@latest"
-        elif tool in pip_tools:
-            logger.log(f"Installing {tool} via pip install...", "INFO")
-            cmd = f"pip install {pip_tools[tool]} --upgrade"
+            # Bypass timed-out proxy
+            current_env["GOPROXY"] = "direct"
+            current_env["GOSUMDB"] = "off"
+        elif tool in pipx_tools:
+            if not find_binary("pipx"):
+                logger.log(f"Skipping {tool}: 'pipx' missing. Recommendation: 'pip install pipx' then 'pipx ensurepath'.", "ERR")
+                continue
+            logger.log(f"Installing {tool} via pipx...", "INFO")
+            cmd = f"pipx install {pipx_tools[tool]} --force"
             
         if cmd:
             try:
-                # Use longer timeout for Go builds (5 mins)
-                proc = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True, timeout=300)
+                # Use longer timeout for Go/Pipx builds (5 mins)
+                proc = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True, timeout=300, env=current_env)
                 logger.log(f"{tool} installed successfully!", "SUCCESS")
                 installed_now.append(tool)
             except subprocess.TimeoutExpired:
@@ -964,8 +971,8 @@ def auto_install_tools(missing, logger):
     still_missing = [t for t in missing if t not in installed_now]
     if still_missing:
         print(f"{Colors.YELLOW}[!] Remaining missing tools: {', '.join(set(still_missing))}{Colors.RESET}")
-        logger.log("TIP: Go tools are installed to ~/go/bin. Pip tools to your Python Scripts folder.", "INFO")
-        logger.log("Make sure these folders are in your system PATH.", "INFO")
+        logger.log("TIP: Go tools are installed to ~/go/bin. Pipx tools are isolated in ~/.local/bin.", "INFO")
+        logger.log("Make sure your PATH includes these bin folders.", "INFO")
     
     if installed_now:
         logger.log(f"Installed {len(installed_now)} tools. Restart your terminal for changes to take effect.", "SUCCESS")
@@ -1471,7 +1478,7 @@ def banner():
  / ____/ ___ |___/ /___/ // /  | |/ |/ / /_/ /  
 /_/   /_/  |_/____//____/___/  |__/|__/\____/   
                                                 
-    PASSIVE RECON TOOL v3.44 (Final-Form)
+    PASSIVE RECON TOOL v3.46 (Final-Form)
     """)
     print(f"{Colors.CYAN}    [!] TIP: Run 'active.py' NEXT using these results for maximum coverage!{Colors.RESET}")
     print(f"{Colors.YELLOW}    [+] VALIDATION: Use --validate to filter dead domains using dnsx.{Colors.RESET}\n")
@@ -1642,3 +1649,5 @@ if __name__ == "__main__":
 # | 2026-03-10 | Antigravity | v3.42: Installer Expansion (Added rix4uni ecosystem: ipfinder, arinrange, subwiz, udon, spk, etc.). |
 # | 2026-03-11 | Antigravity | v3.43: Installer Perfection (Fixed jsubfinder typo, added missing cspfinder recipe). |
 # | 2026-03-11 | Antigravity | v3.44: Installer Categories (Split Go/Pip, added stderr reporting, 300s build timeouts). |
+# | 2026-03-11 | Antigravity | v3.45: Installer Resilience (GOPROXY=direct fallback for timeouts, --break-system-packages for Pip). |
+# | 2026-03-11 | Antigravity | v3.46: Installer Safety (Migrated Python tools to pipx for isolated installation). |

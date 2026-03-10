@@ -1,4 +1,4 @@
-# Passive Recon Tool v3.44 (Final-Form) 🏆🚀
+# Passive Recon Tool v3.46 (Final-Form) 🏆🚀
 
 A production-grade, multi-threaded reconnaissance engine designed for elite bug bounty hunters and penetration testers. After **18 rounds of deep systematic auditing**, this tool has been hardened with **86 critical bug fixes**, making it one of the most stable and reliable passive discovery engines available.
 
