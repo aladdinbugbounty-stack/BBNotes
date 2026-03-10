@@ -75,6 +75,71 @@ Results are saved to `recon_results/[target]/`:
 - `potential_takeovers.txt`: Flagged domains potentially vulnerable to takeover (if `--validate` used).
 - `scan.log`: Definitive execution trail.
 
+## 🛠️ Exhaustive Tool & Mode Matrix
+
+The tool manages **65+ unique discovery vectors**. Below is the literal breakdown of exactly which tools execute in each mode.
+
+### 🟡 Mode: LOW (Stealth & Core)
+*Goal: Minimum noise, maximum speed, fresh VPS safe.*
+
+**Internal Scrapers (Always On):**
+- OTX, CertSpotter, UrlScan, Crt.sh, Anubis, HackerTarget, VirusTotal, ShodanAPI, BugBountyData, SecurityTrails, BinaryEdge, FullHunt, LeakIX, Fofa, Quake, CriminalIP, IntelX, PassiveTotal, ZoomEye, WhoisXMLAPI, BitDiscovery, Hunter, Clearbit, Kaeferjaeger, WebArchive, Riddler, Crobat, Censys, Facebook.
+
+**Binary Tools:**
+- **Subfinder**: Multi-source passive enumeration.
+- **Assetfinder**: Fast subdomain scraper.
+- **Findomain**: High-speed discovery engine.
+- **Chaos**: ProjectDiscovery dataset client.
+
+**Integrated Special:**
+- **Favicon Pivot**: Extract -> Hash -> Shodan Search.
+- **Maelstrom Org**: Broad organization mapping (`org2asn` -> `asnmap` -> `amass`).
+
+---
+
+### 🔵 Mode: MEDIUM (Standard Sweep - Default)
+*Goal: Balanced thoroughness with standard resource usage.*
+
+**Includes EVERYTHING in LOW, plus:**
+
+**Binary Tools:**
+- **Amass**: Heavyweight DNS enumeration (Passive mode).
+- **Gau**: URL fetcher with subdomain extraction.
+- **Katana**: Passive web crawler engine.
+- **Waymore**: Deep Wayback/CommonCrawl crawler.
+- **Waybackurls**: Classic Wayback discovery.
+- **TLSX**: SAN/CN extraction from certificates.
+- **Haktrails**: SecurityTrails binary client.
+- **Subdog**: Passive scraper.
+- **Xsubfind3r**: Subdomains from XSS sources.
+- **CertInfo**: Detailed certificate scraping.
+- **ASNMap**: Infrastructure mapping (ASN).
+- **IPFinder**: Reverse IP lookup tool.
+- **Udon**: Visualization/Enum helper.
+- **Cdncheck**: CDN mapping and tagging.
+- **TLSX**: SSL/TLS SAN/CN Extraction.
+- **IPRanges**: Find IP ranges for domain.
+- **Emailfinder**: Search for emails and related domains.
+- **Tldscan**: Scan for top-level domains.
+- **BuiltWithSubs**: BuiltWith relationship discovery.
+- **Hakrevdns**: Reverse DNS lookup on domain.
+- **SPK**: SPK infrastructure discovery.
+
+**Integrated Special:**
+- **RapidDNS**: High-speed script for RapidDNS.io query.
+
+---
+
+### 🔴 Mode: HIGH (Deep Recon & Heavy Enums)
+*Goal: Maximum coverage for complex targets.*
+
+**Includes EVERYTHING in LOW & MEDIUM, plus:**
+
+**Binary Tools:**
+- **BBOT**: Recursive passive enumeration (Highest Coverage).
+- **Amass (Extended)**: Uses a 30-minute timeout for deep recursive enums.
+- **Waymore (Deep)**: Extended crawling for largest targets.
+
 ---
 **Audit Status:** `GOLD` (18/18 Passes Complete)
 *Developed for the Bug Hunting Playbook.*
