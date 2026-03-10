@@ -918,7 +918,18 @@ def auto_install_tools(missing, logger):
         "chaos": "github.com/projectdiscovery/chaos-client/cmd/chaos",
         "subdog": "github.com/Screetsec/subdog",
         "csprecon": "github.com/praveenreghu/csprecon",
-        "emailfinder": "github.com/p1ngul1n0/emailfinder"
+        "emailfinder": "github.com/p1ngul1n0/emailfinder",
+        "ipfinder": "github.com/rix4uni/ipfinder",
+        "whoxysubs": "github.com/rix4uni/whoxysubs",
+        "arinrange": "github.com/rix4uni/arinrange",
+        "subwiz": "github.com/rix4uni/subwiz",
+        "udon": "github.com/rix4uni/udon",
+        "spk": "github.com/rix4uni/spk",
+        "ipranges": "github.com/rix4uni/ipranges",
+        "tldscan": "github.com/rix4uni/tldscan",
+        "builtwithsubs": "github.com/rix4uni/builtwithsubs",
+        "github-endpoints": "github.com/rix4uni/github-endpoints",
+        "haktrailsfree": "github.com/rix4uni/haktrailsfree"
     }
     
     logger.log(f"Auto-Installer: Attempting to install {len(missing)} tools...", "INFO")
@@ -932,7 +943,7 @@ def auto_install_tools(missing, logger):
                 logger.log(f"{tool} installed successfully!", "SUCCESS")
                 installed_now.append(tool)
             except:
-                logger.log(f"Failed to install {tool}. Please install manually.", "ERR")
+                logger.log(f"Failed to install {tool}. Manual command: {cmd}", "ERR")
         else:
             logger.log(f"No auto-install recipe for {tool}. Skip.", "WARN")
     
@@ -1445,7 +1456,7 @@ def banner():
  / ____/ ___ |___/ /___/ // /  | |/ |/ / /_/ /  
 /_/   /_/  |_/____//____/___/  |__/|__/\____/   
                                                 
-    PASSIVE RECON TOOL v3.40 (Final-Form)
+    PASSIVE RECON TOOL v3.42 (Final-Form)
     """)
     print(f"{Colors.CYAN}    [!] TIP: Run 'active.py' NEXT using these results for maximum coverage!{Colors.RESET}")
     print(f"{Colors.YELLOW}    [+] VALIDATION: Use --validate to filter dead domains using dnsx.{Colors.RESET}\n")
@@ -1612,3 +1623,5 @@ if __name__ == "__main__":
 # | 2026-03-10 | Antigravity | v3.38: Round 18 Final Fixes (WebArchive type guard, last legacy comments cleaned). 86 bugs total. |
 # | 2026-03-10 | Antigravity | v3.39: UX Fix (Enabled --install as a standalone command without requiring -d). |
 # | 2026-03-10 | Antigravity | v3.40: Installer Expansion (Added 10+ new recipes, improved path awareness & feedback). |
+# | 2026-03-10 | Antigravity | v3.41: Installer UX (Display manual install command upon failure). |
+# | 2026-03-10 | Antigravity | v3.42: Installer Expansion (Added rix4uni ecosystem: ipfinder, arinrange, subwiz, udon, spk, etc.). |
