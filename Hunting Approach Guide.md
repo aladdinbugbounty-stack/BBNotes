@@ -206,13 +206,11 @@ graph TD
 
 ## 1.2 — The First 30 Minutes
 
-| **Scope Type** | **Primary Recon Action** | **Key Tools** |
-| :--- | :--- | :--- |
 | **Single Target** | Deep Service & App Profiling | `nmap`, `httpx`, `wappalyzer` |
-| **Wildcard** | Subdomain Enumeration | `subfinder`, `amass`, `pure-dns` |
+| **Wildcard** | Subdomain Enumeration | `passive.py` (25+ sources), `subfinder`, `amass` |
 | **Mobile** | Traffic Interception & Decompilation | `Burp Suite`, `Frida`, `apktool` |
 | **API** | Schema Discovery & Endpoint Fuzzing | `kiterunner`, `arjun`, `ffuf` |
-| **CIDR** | Port Scanning & Network Mapping | `naabu`, `nmap` |
+| **CIDR** | Port Scanning & Network Mapping | `naabu`, `nmap`, `asnmap` |
 
 ## 1.3 — Prioritize Targets (What to Test First)
 
@@ -769,12 +767,7 @@ Don't just look for subdomains; look for "hidden" features in the client-side co
 | AI / LLM / Chatbots | [[Element Testing Checklist#^element-29|AI & LLM Integrations]] |
 | A payment / logic flow | [[#6.2 — Feature-Driven Threat Modeling|Phase 6.2 — Threat Modeling]] |
 
----
-
-## Audit Trail
-
-> [!NOTE]
-> The extensive integration log and audit trail have been moved to a dedicated file to maintain document readability.
-> **Full log:** [[Audit_Trail]]
-
----
+## ## Audit Trail
+| Date | Source | Changes |
+|---|---|---|
+| 2026-03-10 | Antigravity | Integrated new `passive.py` workflows (25+ sources, Favicon, Org Recon). |

