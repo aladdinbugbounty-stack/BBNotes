@@ -1430,7 +1430,7 @@ def banner():
  / ____/ ___ |___/ /___/ // /  | |/ |/ / /_/ /  
 /_/   /_/  |_/____//____/___/  |__/|__/\____/   
                                                 
-    PASSIVE RECON TOOL v3.38 (Final-Form)
+    PASSIVE RECON TOOL v3.39 (Final-Form)
     """)
     print(f"{Colors.CYAN}    [!] TIP: Run 'active.py' NEXT using these results for maximum coverage!{Colors.RESET}")
     print(f"{Colors.YELLOW}    [+] VALIDATION: Use --validate to filter dead domains using dnsx.{Colors.RESET}\n")
@@ -1489,6 +1489,18 @@ EXAMPLES:
         else:
              print(f"{Colors.GREEN}[+] All Dependencies Found.{Colors.RESET}")
         sys.exit(0)
+    if args.install:
+        banner()
+        missing = []
+        check_dependencies(missing)
+        if missing:
+            temp_logger = DualLogger()
+            auto_install_tools(missing, temp_logger)
+        else:
+            print(f"{Colors.GREEN}[+] All dependencies already installed.{Colors.RESET}")
+        if not args.domain and not args.list:
+            sys.exit(0)
+
     if not args.domain and not args.list:
         parser.print_help(sys.stderr)
         print(f"\n{Colors.YELLOW}[!] No arguments provided. See examples above.{Colors.RESET}")
@@ -1511,14 +1523,6 @@ EXAMPLES:
             
     print(f"{Colors.BOLD}Mode: {args.mode.upper()} | Targets: {len(targets)} | Output: {args.output}{Colors.RESET}")
     print("-" * 60)
-    
-    # 0. Global Setup
-    if args.install:
-        missing = []
-        check_dependencies(missing)
-        if missing:
-            temp_logger = DualLogger()
-            auto_install_tools(missing, temp_logger)
             
     # Move advice to main so it prints once
     logger = DualLogger()
@@ -1591,3 +1595,4 @@ if __name__ == "__main__":
 # | 2026-03-10 | Antigravity | v3.36: Round 16 Audit Fixes (Kaeferjaeger/HackerTarget hardening, legacy comment cleanup). |
 # | 2026-03-10 | Antigravity | v3.37: Round 17 Audit Fixes (Restored critical email extraction regression, CertSpotter hardening). |
 # | 2026-03-10 | Antigravity | v3.38: Round 18 Final Fixes (WebArchive type guard, last legacy comments cleaned). 86 bugs total. |
+# | 2026-03-10 | Antigravity | v3.39: UX Fix (Enabled --install as a standalone command without requiring -d). |
