@@ -909,10 +909,20 @@ def auto_install_tools(missing, logger):
         "tlsx": "github.com/projectdiscovery/tlsx/cmd/tlsx",
         "cero": "github.com/glebarez/cero",
         "asnmap": "github.com/projectdiscovery/asnmap/cmd/asnmap",
-        "cdncheck": "github.com/projectdiscovery/cdncheck/cmd/cdncheck"
+        "cdncheck": "github.com/projectdiscovery/cdncheck/cmd/cdncheck",
+        "certinfo": "github.com/projectdiscovery/certinfo/cmd/certinfo",
+        "jsubfinder": "github.com/ThreatUnknow/jsubfinder",
+        "xsubfind3r": "github.com/hueristiq/xsubfind3r/cmd/xsubfind3r",
+        "xurlfind3r": "github.com/hueristiq/xurlfind3r/cmd/xurlfind3r",
+        "waymore": "github.com/xnl-h4ck3r/waymore",
+        "chaos": "github.com/projectdiscovery/chaos-client/cmd/chaos",
+        "subdog": "github.com/Screetsec/subdog",
+        "csprecon": "github.com/praveenreghu/csprecon",
+        "emailfinder": "github.com/p1ngul1n0/emailfinder"
     }
     
     logger.log(f"Auto-Installer: Attempting to install {len(missing)} tools...", "INFO")
+    installed_now = []
     for tool in missing:
         if tool in go_tools:
             logger.log(f"Installing {tool} via go install...", "INFO")
@@ -920,14 +930,19 @@ def auto_install_tools(missing, logger):
             try:
                 subprocess.run(cmd, shell=True, check=True, capture_output=True)
                 logger.log(f"{tool} installed successfully!", "SUCCESS")
+                installed_now.append(tool)
             except:
                 logger.log(f"Failed to install {tool}. Please install manually.", "ERR")
         else:
             logger.log(f"No auto-install recipe for {tool}. Skip.", "WARN")
     
-    if missing:
-        print(f"{Colors.YELLOW}[!] Missing tools (will be skipped): {', '.join(set(missing))}{Colors.RESET}")
-    else:
+    still_missing = [t for t in missing if t not in installed_now]
+    if still_missing:
+        print(f"{Colors.YELLOW}[!] Remaining missing tools: {', '.join(set(still_missing))}{Colors.RESET}")
+        logger.log("TIP: Go tools are installed to ~/go/bin. Add this to your PATH to use them.", "INFO")
+    
+    if installed_now:
+        logger.log(f"Installed {len(installed_now)} tools. Please restart your terminal for changes to take effect.", "SUCCESS")
         print(f"{Colors.GREEN}[+] All core tools found.{Colors.RESET}")
 
 def configure_interactive():
@@ -1430,7 +1445,7 @@ def banner():
  / ____/ ___ |___/ /___/ // /  | |/ |/ / /_/ /  
 /_/   /_/  |_/____//____/___/  |__/|__/\____/   
                                                 
-    PASSIVE RECON TOOL v3.39 (Final-Form)
+    PASSIVE RECON TOOL v3.40 (Final-Form)
     """)
     print(f"{Colors.CYAN}    [!] TIP: Run 'active.py' NEXT using these results for maximum coverage!{Colors.RESET}")
     print(f"{Colors.YELLOW}    [+] VALIDATION: Use --validate to filter dead domains using dnsx.{Colors.RESET}\n")
@@ -1596,3 +1611,4 @@ if __name__ == "__main__":
 # | 2026-03-10 | Antigravity | v3.37: Round 17 Audit Fixes (Restored critical email extraction regression, CertSpotter hardening). |
 # | 2026-03-10 | Antigravity | v3.38: Round 18 Final Fixes (WebArchive type guard, last legacy comments cleaned). 86 bugs total. |
 # | 2026-03-10 | Antigravity | v3.39: UX Fix (Enabled --install as a standalone command without requiring -d). |
+# | 2026-03-10 | Antigravity | v3.40: Installer Expansion (Added 10+ new recipes, improved path awareness & feedback). |
