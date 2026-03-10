@@ -890,12 +890,7 @@ def check_dependencies(missing):
                     if b not in missing: missing.append(b)
 
 def auto_install_tools(missing, logger):
-    """Attempts to install missing Go tools automatically."""
-    # Check if 'go' exists before trying to install
-    if not find_binary("go"):
-        logger.log("'go' command not found. Cannot auto-install tools.", "ERR")
-        return
-
+    """Attempts to install missing tools (Go, Pip) automatically."""
     go_tools = {
         "subfinder": "github.com/projectdiscovery/subfinder/v2/cmd/subfinder",
         "katana": "github.com/projectdiscovery/katana/cmd/katana",
@@ -911,18 +906,17 @@ def auto_install_tools(missing, logger):
         "asnmap": "github.com/projectdiscovery/asnmap/cmd/asnmap",
         "cdncheck": "github.com/projectdiscovery/cdncheck/cmd/cdncheck",
         "certinfo": "github.com/projectdiscovery/certinfo/cmd/certinfo",
-        "jsubfinder": "github.com/ThreatUnknow/jsubfinder",
+        "jsubfinder": "github.com/ThreatUnknown/jsubfinder",
         "xsubfind3r": "github.com/hueristiq/xsubfind3r/cmd/xsubfind3r",
         "xurlfind3r": "github.com/hueristiq/xurlfind3r/cmd/xurlfind3r",
-        "waymore": "github.com/xnl-h4ck3r/waymore",
         "chaos": "github.com/projectdiscovery/chaos-client/cmd/chaos",
         "subdog": "github.com/Screetsec/subdog",
         "csprecon": "github.com/praveenreghu/csprecon",
-        "emailfinder": "github.com/p1ngul1n0/emailfinder",
         "ipfinder": "github.com/rix4uni/ipfinder",
         "whoxysubs": "github.com/rix4uni/whoxysubs",
         "arinrange": "github.com/rix4uni/arinrange",
         "subwiz": "github.com/rix4uni/subwiz",
+        "cspfinder": "github.com/rix4uni/cspfinder",
         "udon": "github.com/rix4uni/udon",
         "spk": "github.com/rix4uni/spk",
         "ipranges": "github.com/rix4uni/ipranges",
@@ -931,29 +925,50 @@ def auto_install_tools(missing, logger):
         "github-endpoints": "github.com/rix4uni/github-endpoints",
         "haktrailsfree": "github.com/rix4uni/haktrailsfree"
     }
+    pip_tools = {
+        "emailfinder": "emailfinder",
+        "waymore": "waymore",
+        "bbot": "bbot"
+    }
     
     logger.log(f"Auto-Installer: Attempting to install {len(missing)} tools...", "INFO")
     installed_now = []
+    
     for tool in missing:
+        cmd = None
         if tool in go_tools:
+            if not find_binary("go"):
+                logger.log(f"Skipping {tool}: 'go' command missing.", "ERR")
+                continue
             logger.log(f"Installing {tool} via go install...", "INFO")
             cmd = f"go install {go_tools[tool]}@latest"
+        elif tool in pip_tools:
+            logger.log(f"Installing {tool} via pip install...", "INFO")
+            cmd = f"pip install {pip_tools[tool]} --upgrade"
+            
+        if cmd:
             try:
-                subprocess.run(cmd, shell=True, check=True, capture_output=True)
+                # Use longer timeout for Go builds (5 mins)
+                proc = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True, timeout=300)
                 logger.log(f"{tool} installed successfully!", "SUCCESS")
                 installed_now.append(tool)
-            except:
-                logger.log(f"Failed to install {tool}. Manual command: {cmd}", "ERR")
+            except subprocess.TimeoutExpired:
+                logger.log(f"Installation of {tool} timed out (300s). Command: {cmd}", "ERR")
+            except subprocess.CalledProcessError as e:
+                err_snippet = e.stderr.strip().split('\n')[-1] if e.stderr else "Unknown error"
+                logger.log(f"Failed to install {tool}: {err_snippet}", "ERR")
+                logger.log(f"Manual command: {cmd}", "INFO")
         else:
             logger.log(f"No auto-install recipe for {tool}. Skip.", "WARN")
     
     still_missing = [t for t in missing if t not in installed_now]
     if still_missing:
         print(f"{Colors.YELLOW}[!] Remaining missing tools: {', '.join(set(still_missing))}{Colors.RESET}")
-        logger.log("TIP: Go tools are installed to ~/go/bin. Add this to your PATH to use them.", "INFO")
+        logger.log("TIP: Go tools are installed to ~/go/bin. Pip tools to your Python Scripts folder.", "INFO")
+        logger.log("Make sure these folders are in your system PATH.", "INFO")
     
     if installed_now:
-        logger.log(f"Installed {len(installed_now)} tools. Please restart your terminal for changes to take effect.", "SUCCESS")
+        logger.log(f"Installed {len(installed_now)} tools. Restart your terminal for changes to take effect.", "SUCCESS")
         print(f"{Colors.GREEN}[+] All core tools found.{Colors.RESET}")
 
 def configure_interactive():
@@ -1456,7 +1471,7 @@ def banner():
  / ____/ ___ |___/ /___/ // /  | |/ |/ / /_/ /  
 /_/   /_/  |_/____//____/___/  |__/|__/\____/   
                                                 
-    PASSIVE RECON TOOL v3.42 (Final-Form)
+    PASSIVE RECON TOOL v3.44 (Final-Form)
     """)
     print(f"{Colors.CYAN}    [!] TIP: Run 'active.py' NEXT using these results for maximum coverage!{Colors.RESET}")
     print(f"{Colors.YELLOW}    [+] VALIDATION: Use --validate to filter dead domains using dnsx.{Colors.RESET}\n")
@@ -1625,3 +1640,5 @@ if __name__ == "__main__":
 # | 2026-03-10 | Antigravity | v3.40: Installer Expansion (Added 10+ new recipes, improved path awareness & feedback). |
 # | 2026-03-10 | Antigravity | v3.41: Installer UX (Display manual install command upon failure). |
 # | 2026-03-10 | Antigravity | v3.42: Installer Expansion (Added rix4uni ecosystem: ipfinder, arinrange, subwiz, udon, spk, etc.). |
+# | 2026-03-11 | Antigravity | v3.43: Installer Perfection (Fixed jsubfinder typo, added missing cspfinder recipe). |
+# | 2026-03-11 | Antigravity | v3.44: Installer Categories (Split Go/Pip, added stderr reporting, 300s build timeouts). |
